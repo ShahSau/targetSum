@@ -1,7 +1,7 @@
 import {
   View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 
 const styles = StyleSheet.create({
   random: {
@@ -12,15 +12,27 @@ const styles = StyleSheet.create({
     fontSize: 45,
     textAlign: 'center',
   },
+  disabled: {
+    opacity: 0.3,
+  },
 });
-function Randomnumber({ num }) {
-  const handlePress = (number) => {
-    console.log(number);
+function Randomnumber({
+  num, onPress, id, me,
+}) {
+  const [val, setVal] = useState(false);
+  const handlePress = () => {
+    if (me.indexOf(id) >= 0) { return; }
+    onPress(id);
+    setVal(me.indexOf(id) >= 0);
+    console.log(me);
   };
+
   return (
     <View>
-      <TouchableOpacity onPress={() => handlePress(num)}>
-        <Text style={styles.random}>{num}</Text>
+      <TouchableOpacity onPress={handlePress}>
+
+        <Text style={[styles.random, val && styles.disabled]}>{num}</Text>
+
       </TouchableOpacity>
     </View>
   );
