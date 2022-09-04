@@ -2,6 +2,7 @@ import {
   SafeAreaView, View, Text, StyleSheet, Button
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import shuffle from 'lodash.shuffle';
 import Randomnumber from './Randomnumber';
 
 const styles = StyleSheet.create({
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function Game({ randomNumberCount, number,remaniningSeconds }) {
+function Game({ randomNumberCount, number,reset }) {
   const [currentgameStatus, setCurrentgameStatus] = useState('start');
   // eslint-disable-next-line no-unused-vars
   const selectedIds = [];
@@ -47,8 +48,9 @@ function Game({ randomNumberCount, number,remaniningSeconds }) {
     }
     return false;
   };
+  const shuffledNumbers = shuffle(randomNumbers)
   const gameStatus = () => {
-    const sumSelected = selectedIds.reduce((acc, curr) => acc + randomNumbers[curr], 0);
+    const sumSelected = selectedIds.reduce((acc, curr) => acc + shuffledNumbers[curr], 0);
     if (sumSelected < target) {
       return 'PLAYING';
     }
@@ -71,15 +73,18 @@ function Game({ randomNumberCount, number,remaniningSeconds }) {
   const gameStart = () => {
     setCurrentgameStatus('PLAYING');
   };
-
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={[styles.target, styles[`STATUS_${currentgameStatus}`]]}>{target}</Text>
-
+      {currentgameStatus === 'PLAYING'
+      && <Text style={[styles.target, styles[`STATUS_${currentgameStatus}`]]}>{target}</Text>}
+      {currentgameStatus === 'WON'
+      && <Text style={[styles.target, styles[`STATUS_${currentgameStatus}`]]}>You Won</Text>}
+      {currentgameStatus === 'LOST'
+      && <Text style={[styles.target, styles[`STATUS_${currentgameStatus}`]]}>You lost</Text>}
       <View style={styles.randomNumberContainer}>
         {currentgameStatus !== 'PLAYING'
         && <Button title="Play" onPress={() => gameStart()} />}
-        {currentgameStatus === 'PLAYING' && randomNumbers.map((num, index) => (
+        {currentgameStatus === 'PLAYING' && shuffledNumbers.map((num, index) => (
           <Randomnumber
             key={Math.random()}
             num={num}
@@ -90,6 +95,7 @@ function Game({ randomNumberCount, number,remaniningSeconds }) {
             onPress={selectNumber}
           />
         ))}
+        {currentgameStatus === 'PLAYING' && <Button title="RESET" onPress={() => reset()} />}
       </View>
       <Text>
         {' '}
@@ -102,8 +108,5 @@ function Game({ randomNumberCount, number,remaniningSeconds }) {
 export default Game;
 {/*
 ideas:
-0. instead of target show you won / you lost
-1. beginigne 'start' second hole, games rule show korbe
-2. won and lost er jonno 2 different kinds of screen
-3. time limit feature
+1. time limit feature
 */}
