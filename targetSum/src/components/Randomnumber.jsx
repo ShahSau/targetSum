@@ -17,22 +17,18 @@ const styles = StyleSheet.create({
   },
 });
 function Randomnumber({
-  num, onPress, id, me,
+  num, onPress, id, ids,me
 }) {
   const [val, setVal] = useState(false);
   const handlePress = () => {
-    if (me.indexOf(id) >= 0) { return; }
+    if (ids.indexOf(id) >= 0) { return; }
     onPress(id);
-    setVal(me.indexOf(id) >= 0);
-    console.log(me);
+    setVal(ids.indexOf(id) >= 0);
   };
-
   return (
     <View>
       <TouchableOpacity onPress={handlePress}>
-
         <Text style={[styles.random, val && styles.disabled]}>{num}</Text>
-
       </TouchableOpacity>
     </View>
   );
